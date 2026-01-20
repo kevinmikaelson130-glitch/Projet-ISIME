@@ -68,7 +68,7 @@ export const Header = () => {
               <img
                 src={isimeLogo}
                 alt="ISIME - Institut Supérieur de l'Informatique et Management"
-                className="h-20 w-auto object-contain"
+                className="h-28 w-auto object-contain"
               />
             </a>
 

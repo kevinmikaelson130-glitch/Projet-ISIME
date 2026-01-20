@@ -32,7 +32,7 @@ export const Footer = () => {
             <img
               src={isimeLogo}
               alt="ISIME"
-              className="h-16 w-auto mb-6 bg-white rounded-lg p-2"
+              className="h-24 w-auto mb-6 bg-white rounded-lg p-2"
             />
             <p className="text-white/70 mb-6 max-w-sm leading-relaxed">
               Institut Supérieur de l'Informatique et du Management de l'Entreprise. 
@@ -40,7 +40,7 @@ export const Footer = () => {
             </p>
             <div className="flex items-center gap-4">
               <a
-                href="https://facebook.com/isime"
+                href="https://www.facebook.com/instiut.ISIME"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary transition-colors"
@@ -97,7 +97,7 @@ export const Footer = () => {
               </li>
               <li className="flex items-center gap-3 text-white/70">
                 <Mail className="w-5 h-5 text-primary flex-shrink-0" />
-                <span>contact@isime.mg</span>
+                <span>universite.isime@gmail.com</span>
               </li>
               <li className="flex items-start gap-3 text-white/70">
                 <MapPin className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
