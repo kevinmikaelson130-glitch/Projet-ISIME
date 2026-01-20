@@ -43,9 +43,9 @@ export const Header = () => {
               <Phone className="w-4 h-4" />
               <span>038 15 816 66</span>
             </a>
-            <a href="mailto:contact@isime.mg" className="flex items-center gap-2 hover:text-primary transition-colors">
+            <a href="mailto:universite.isime@gmail.com" className="flex items-center gap-2 hover:text-primary transition-colors">
               <Mail className="w-4 h-4" />
-              <span>contact@isime.mg</span>
+              <span>universite.isime@gmail.com</span>
             </a>
           </div>
           <div className="flex items-center gap-4">
@@ -68,7 +68,7 @@ export const Header = () => {
               <img
                 src={isimeLogo}
                 alt="ISIME - Institut Supérieur de l'Informatique et Management"
-                className="h-14 w-auto object-contain"
+                className="h-20 w-auto object-contain"
               />
             </a>
 

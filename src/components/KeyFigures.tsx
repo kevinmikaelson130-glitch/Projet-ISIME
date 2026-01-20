@@ -2,10 +2,10 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 
 const figures = [
-  { value: 80, suffix: "%", label: "Taux d'insertion en stage" },
-  { value: 15, suffix: "", label: "Clubs étudiants" },
-  { value: 2, suffix: "", label: "Campus modernes" },
-  { value: 10, suffix: "%", label: "Départ à l'international" },
+  { value: 95, suffix: "%", label: "Diplômés trouvent un emploi l'année suivante" },
+  { value: 90, suffix: "%", label: "Stagiaires reçoivent des propositions d'embauche" },
+  { value: 90, suffix: "%", label: "Anciens étudiants satisfaits de leur diplôme" },
+  { value: 80, suffix: "%", label: "Trouvent un stage grâce à notre renom" },
 ];
 
 const CountUp = ({ end, suffix, isInView }: { end: number; suffix: string; isInView: boolean }) => {
