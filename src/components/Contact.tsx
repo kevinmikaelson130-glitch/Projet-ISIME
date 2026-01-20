@@ -111,8 +111,8 @@ export const Contact = () => {
             >
               <div className="flex items-center gap-3 text-muted-foreground">
                 <Mail className="w-5 h-5 text-primary" />
-                <a href="mailto:contact@isime.mg" className="hover:text-primary transition-colors">
-                  contact@isime.mg
+                <a href="mailto:universite.isime@gmail.com" className="hover:text-primary transition-colors">
+                  universite.isime@gmail.com
                 </a>
               </div>
               <div className="flex items-center gap-3 text-muted-foreground">
