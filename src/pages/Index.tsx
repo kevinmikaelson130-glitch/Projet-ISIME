@@ -4,6 +4,7 @@ import { WhyChooseUs } from "@/components/WhyChooseUs";
 import { KeyFigures } from "@/components/KeyFigures";
 import { Programs } from "@/components/Programs";
 import { About } from "@/components/About";
+import { CampusGallery } from "@/components/CampusGallery";
 import { Admissions } from "@/components/Admissions";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
@@ -18,6 +19,7 @@ const Index = () => {
         <KeyFigures />
         <Programs />
         <About />
+        <CampusGallery />
         <Admissions />
         <Contact />
       </main>
