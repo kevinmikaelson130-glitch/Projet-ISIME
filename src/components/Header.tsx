@@ -65,10 +65,10 @@ export const Header = () => {
           <nav className="flex items-center justify-between h-20">
             {/* Logo */}
             <a href="#" className="flex-shrink-0">
-              <img
+            <img
                 src={isimeLogo}
                 alt="ISIME - Institut Supérieur de l'Informatique et Management"
-                className="h-28 w-auto object-contain"
+                className="h-20 w-auto object-contain"
               />
             </a>
 
