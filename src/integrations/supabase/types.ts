@@ -14,7 +14,108 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      applications: {
+        Row: {
+          address: string
+          city: string
+          country: string
+          created_at: string
+          date_of_birth: string
+          education_level: string
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          motivation: string
+          nationality: string
+          phone: string
+          previous_school: string | null
+          program: string
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          address: string
+          city: string
+          country: string
+          created_at?: string
+          date_of_birth: string
+          education_level: string
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          motivation: string
+          nationality: string
+          phone: string
+          previous_school?: string | null
+          program: string
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          city?: string
+          country?: string
+          created_at?: string
+          date_of_birth?: string
+          education_level?: string
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          motivation?: string
+          nationality?: string
+          phone?: string
+          previous_school?: string | null
+          program?: string
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      blog_posts: {
+        Row: {
+          category: string | null
+          content: string
+          created_at: string
+          excerpt: string | null
+          id: string
+          image_url: string | null
+          published: boolean | null
+          published_at: string | null
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          content: string
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          image_url?: string | null
+          published?: boolean | null
+          published_at?: string | null
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          content?: string
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          image_url?: string | null
+          published?: boolean | null
+          published_at?: string | null
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
