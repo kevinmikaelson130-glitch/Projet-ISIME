@@ -5,6 +5,8 @@ import { KeyFigures } from "@/components/KeyFigures";
 import { Programs } from "@/components/Programs";
 import { About } from "@/components/About";
 import { CampusGallery } from "@/components/CampusGallery";
+import { Blog } from "@/components/Blog";
+import { ApplicationForm } from "@/components/ApplicationForm";
 import { Admissions } from "@/components/Admissions";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
@@ -20,6 +22,8 @@ const Index = () => {
         <Programs />
         <About />
         <CampusGallery />
+        <Blog />
+        <ApplicationForm />
         <Admissions />
         <Contact />
       </main>
