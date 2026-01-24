@@ -8,7 +8,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
   FormControl,
@@ -33,12 +32,9 @@ const applicationSchema = z.object({
   date_of_birth: z.string().min(1, "La date de naissance est requise"),
   nationality: z.string().min(2, "La nationalité est requise").max(50),
   address: z.string().min(5, "L'adresse est requise").max(200),
-  city: z.string().min(2, "La ville est requise").max(50),
-  country: z.string().min(2, "Le pays est requis").max(50),
   program: z.string().min(1, "Veuillez sélectionner un programme"),
   education_level: z.string().min(1, "Veuillez sélectionner votre niveau d'études"),
   previous_school: z.string().max(100).optional(),
-  motivation: z.string().min(50, "La lettre de motivation doit contenir au moins 50 caractères").max(2000),
 });
 
 type ApplicationFormData = z.infer<typeof applicationSchema>;
@@ -49,15 +45,14 @@ const programs = [
   "Master en Informatique",
   "Master en Management",
   "MBA",
-  "Doctorat",
 ];
 
 const educationLevels = [
   "Baccalauréat",
+  "Bac +2 (DTS)",
   "Licence (Bac+3)",
   "Master 1 (Bac+4)",
   "Master 2 (Bac+5)",
-  "Doctorat",
   "Autre",
 ];
 
@@ -76,12 +71,9 @@ export const ApplicationForm = () => {
       date_of_birth: "",
       nationality: "",
       address: "",
-      city: "",
-      country: "",
       program: "",
       education_level: "",
       previous_school: "",
-      motivation: "",
     },
   });
 
@@ -96,12 +88,12 @@ export const ApplicationForm = () => {
       date_of_birth: data.date_of_birth,
       nationality: data.nationality,
       address: data.address,
-      city: data.city,
-      country: data.country,
+      city: "N/A",
+      country: "N/A",
       program: data.program,
       education_level: data.education_level,
       previous_school: data.previous_school || null,
-      motivation: data.motivation,
+      motivation: "N/A",
     });
 
     setIsLoading(false);
@@ -270,47 +262,19 @@ export const ApplicationForm = () => {
                 <h3 className="text-lg font-semibold text-foreground mb-4 pb-2 border-b">
                   Adresse
                 </h3>
-                <div className="grid md:grid-cols-2 gap-6">
-                  <FormField
-                    control={form.control}
-                    name="address"
-                    render={({ field }) => (
-                      <FormItem className="md:col-span-2">
-                        <FormLabel>Adresse complète *</FormLabel>
-                        <FormControl>
-                          <Input placeholder="123 Avenue de l'Université" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="city"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Ville *</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Kinshasa" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="country"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Pays *</FormLabel>
-                        <FormControl>
-                          <Input placeholder="RD Congo" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                <FormField
+                  control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Adresse complète *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="123 Avenue de l'Université, Kinshasa" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
 
               {/* Academic Information */}
@@ -381,30 +345,6 @@ export const ApplicationForm = () => {
                     )}
                   />
                 </div>
-              </div>
-
-              {/* Motivation */}
-              <div>
-                <h3 className="text-lg font-semibold text-foreground mb-4 pb-2 border-b">
-                  Motivation
-                </h3>
-                <FormField
-                  control={form.control}
-                  name="motivation"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Lettre de motivation *</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Expliquez pourquoi vous souhaitez rejoindre l'ISIME et ce que vous espérez accomplir..."
-                          className="min-h-[150px]"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
               </div>
 
               <div className="flex justify-center pt-4">
