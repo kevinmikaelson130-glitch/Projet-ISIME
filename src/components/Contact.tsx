@@ -38,6 +38,7 @@ export const Contact = () => {
       const { error } = await supabase.from('contact_messages').insert({
         name: formData.name,
         email: formData.email,
+        phone: formData.phone || null,
         subject: formData.subject,
         message: formData.message,
       });
@@ -176,15 +177,16 @@ export const Contact = () => {
                 </div>
                 <div>
                   <label htmlFor="phone" className="block text-sm font-medium mb-2">
-                    Téléphone
+                    Téléphone * <span className="text-xs text-muted-foreground">(pour réponse WhatsApp)</span>
                   </label>
                   <input
                     type="tel"
                     id="phone"
+                    required
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                    placeholder="Votre numéro"
+                    placeholder="034 00 000 00"
                   />
                 </div>
               </div>
