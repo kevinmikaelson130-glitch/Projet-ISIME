@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, Filter, Eye, MessageSquare, Check, X, 
   Clock, Calendar, User, Mail, Phone, GraduationCap,
-  ChevronDown, Send
+  ChevronDown, Send, MessageCircle
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -106,6 +106,26 @@ export const AdminApplications = () => {
     setIsResponseOpen(true);
   };
 
+  const formatPhoneForWhatsApp = (phone: string) => {
+    // Remove spaces, dashes, and other characters, keep only digits
+    let cleaned = phone.replace(/[\s\-\(\)\.]/g, '');
+    // If starts with 0, replace with Madagascar country code
+    if (cleaned.startsWith('0')) {
+      cleaned = '261' + cleaned.substring(1);
+    }
+    // If doesn't start with +, assume it needs the + for international format
+    if (!cleaned.startsWith('+') && !cleaned.startsWith('261')) {
+      cleaned = '261' + cleaned;
+    }
+    return cleaned.replace('+', '');
+  };
+
+  const openWhatsApp = (phone: string, message: string) => {
+    const formattedPhone = formatPhoneForWhatsApp(phone);
+    const encodedMessage = encodeURIComponent(message);
+    window.open(`https://wa.me/${formattedPhone}?text=${encodedMessage}`, '_blank');
+  };
+
   const handleSendResponse = async () => {
     if (!selectedApplication) return;
     
@@ -126,9 +146,13 @@ export const AdminApplications = () => {
         variant: 'destructive',
       });
     } else {
+      // Open WhatsApp with the response message
+      if (response.trim()) {
+        openWhatsApp(selectedApplication.phone, response);
+      }
       toast({
         title: 'Succès',
-        description: 'La réponse a été enregistrée',
+        description: 'La réponse a été enregistrée et WhatsApp ouvert',
       });
       setIsResponseOpen(false);
       fetchApplications();
@@ -428,7 +452,7 @@ export const AdminApplications = () => {
                 <Button variant="outline" onClick={() => setIsResponseOpen(false)}>
                   Annuler
                 </Button>
-                <Button onClick={handleSendResponse} disabled={isSending}>
+                <Button onClick={handleSendResponse} disabled={isSending} className="bg-green-600 hover:bg-green-700">
                   {isSending ? (
                     <>
                       <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>
@@ -436,8 +460,8 @@ export const AdminApplications = () => {
                     </>
                   ) : (
                     <>
-                      <Send className="w-4 h-4 mr-2" />
-                      Enregistrer
+                      <MessageCircle className="w-4 h-4 mr-2" />
+                      Envoyer via WhatsApp
                     </>
                   )}
                 </Button>
