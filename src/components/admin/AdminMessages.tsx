@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, Filter, Eye, MessageSquare, Check, Clock,
-  Mail, User, Send, Inbox
+  Mail, User, Send, Inbox, MessageCircle, Phone
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -30,6 +30,7 @@ interface ContactMessage {
   id: string;
   name: string;
   email: string;
+  phone?: string;
   subject: string;
   message: string;
   status: string | null;
@@ -96,6 +97,23 @@ export const AdminMessages = () => {
     setIsResponseOpen(true);
   };
 
+  const formatPhoneForWhatsApp = (phone: string) => {
+    let cleaned = phone.replace(/[\s\-\(\)\.]/g, '');
+    if (cleaned.startsWith('0')) {
+      cleaned = '261' + cleaned.substring(1);
+    }
+    if (!cleaned.startsWith('+') && !cleaned.startsWith('261')) {
+      cleaned = '261' + cleaned;
+    }
+    return cleaned.replace('+', '');
+  };
+
+  const openWhatsApp = (phone: string, message: string) => {
+    const formattedPhone = formatPhoneForWhatsApp(phone);
+    const encodedMessage = encodeURIComponent(message);
+    window.open(`https://wa.me/${formattedPhone}?text=${encodedMessage}`, '_blank');
+  };
+
   const handleSendResponse = async () => {
     if (!selectedMessage) return;
     
@@ -116,9 +134,15 @@ export const AdminMessages = () => {
         variant: 'destructive',
       });
     } else {
+      // Open WhatsApp with the response message if phone is available
+      if (response.trim() && selectedMessage.phone) {
+        openWhatsApp(selectedMessage.phone, response);
+      }
       toast({
         title: 'Succès',
-        description: 'La réponse a été enregistrée',
+        description: selectedMessage.phone 
+          ? 'La réponse a été enregistrée et WhatsApp ouvert' 
+          : 'La réponse a été enregistrée (pas de téléphone disponible)',
       });
       setIsResponseOpen(false);
       fetchMessages();
@@ -352,11 +376,22 @@ export const AdminMessages = () => {
                 />
               </div>
 
+              {selectedMessage?.phone && (
+                <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
+                  <Phone className="w-4 h-4" />
+                  <span>La réponse sera envoyée via WhatsApp au {selectedMessage.phone}</span>
+                </div>
+              )}
+
               <div className="flex justify-end gap-2">
                 <Button variant="outline" onClick={() => setIsResponseOpen(false)}>
                   Annuler
                 </Button>
-                <Button onClick={handleSendResponse} disabled={isSending || !response.trim()}>
+                <Button 
+                  onClick={handleSendResponse} 
+                  disabled={isSending || !response.trim()}
+                  className={selectedMessage?.phone ? "bg-green-600 hover:bg-green-700" : ""}
+                >
                   {isSending ? (
                     <>
                       <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>
@@ -364,8 +399,12 @@ export const AdminMessages = () => {
                     </>
                   ) : (
                     <>
-                      <Send className="w-4 h-4 mr-2" />
-                      Envoyer
+                      {selectedMessage?.phone ? (
+                        <MessageCircle className="w-4 h-4 mr-2" />
+                      ) : (
+                        <Send className="w-4 h-4 mr-2" />
+                      )}
+                      {selectedMessage?.phone ? 'Envoyer via WhatsApp' : 'Enregistrer'}
                     </>
                   )}
                 </Button>

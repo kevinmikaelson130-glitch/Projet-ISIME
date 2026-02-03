@@ -4,6 +4,8 @@ import { Menu, X, ChevronDown, Phone, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
 import isimeLogo from "@/assets/isime-logo.jpeg";
 
+import { Link } from "react-router-dom";
+
 const navItems = [
   { label: "Accueil", href: "#" },
   {
@@ -117,8 +119,14 @@ export const Header = () => {
               ))}
             </div>
 
-            {/* CTA Button */}
+            {/* CTA Buttons */}
             <div className="hidden lg:flex items-center gap-4">
+              <Link 
+                to="/admin" 
+                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+              >
+                Admin
+              </Link>
               <a href="#admissions" className="btn-primary">
                 Postuler maintenant
               </a>
@@ -170,7 +178,14 @@ export const Header = () => {
                     )}
                   </div>
                 ))}
-                <div className="pt-4">
+                <div className="pt-4 space-y-2">
+                  <Link 
+                    to="/admin" 
+                    className="block py-2 text-center text-muted-foreground hover:text-primary transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Admin
+                  </Link>
                   <a href="#admissions" className="btn-primary w-full text-center">
                     Postuler maintenant
                   </a>
