@@ -20,7 +20,9 @@ const AdminLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { signIn, user, isAdmin, isLoading: authLoading } = useAuth();
+  const [success, setSuccess] = useState<string | null>(null);
+  const [isSignUp, setIsSignUp] = useState(false);
+  const { signIn, signUp, user, isAdmin, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,9 +31,16 @@ const AdminLogin = () => {
     }
   }, [user, isAdmin, authLoading, navigate]);
 
+  useEffect(() => {
+    if (!authLoading && user && !isAdmin) {
+      setError("Ce compte n'a pas les droits administrateur. Contactez l'administrateur principal pour obtenir l'accès.");
+    }
+  }, [user, isAdmin, authLoading]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setSuccess(null);
     setIsLoading(true);
 
     try {
@@ -39,6 +48,22 @@ const AdminLogin = () => {
       const validation = loginSchema.safeParse({ email, password });
       if (!validation.success) {
         setError(validation.error.errors[0].message);
+        setIsLoading(false);
+        return;
+      }
+
+      if (isSignUp) {
+        const { error: signUpError } = await signUp(email, password);
+        if (signUpError) {
+          if (signUpError.message.includes('already registered')) {
+            setError('Cet email est déjà utilisé');
+          } else {
+            setError(signUpError.message);
+          }
+          setIsLoading(false);
+          return;
+        }
+        setSuccess('Compte créé ! Vérifiez votre email pour confirmer, puis contactez l\'administrateur pour obtenir les droits admin.');
         setIsLoading(false);
         return;
       }
@@ -87,7 +112,9 @@ const AdminLogin = () => {
               className="w-20 h-20 mx-auto mb-4 rounded-xl object-cover"
             />
             <h1 className="text-2xl font-bold text-foreground">Administration ISIME</h1>
-            <p className="text-muted-foreground mt-2">Connectez-vous à votre espace admin</p>
+            <p className="text-muted-foreground mt-2">
+              {isSignUp ? 'Créez votre compte administrateur' : 'Connectez-vous à votre espace admin'}
+            </p>
           </div>
 
           {error && (
@@ -98,6 +125,17 @@ const AdminLogin = () => {
             >
               <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
               <p className="text-sm text-destructive">{error}</p>
+            </motion.div>
+          )}
+
+          {success && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 p-4 bg-green-500/10 border border-green-500/20 rounded-xl flex items-start gap-3"
+            >
+              <AlertCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-green-600">{success}</p>
             </motion.div>
           )}
 
@@ -148,22 +186,35 @@ const AdminLogin = () => {
             >
               {isLoading ? (
                 <>
-                  <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>
-                  Connexion...
+                  <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-foreground mr-2"></span>
+                  {isSignUp ? 'Inscription...' : 'Connexion...'}
                 </>
               ) : (
-                'Se connecter'
+                isSignUp ? "S'inscrire" : 'Se connecter'
               )}
             </Button>
           </form>
 
-          <div className="mt-6 text-center">
-            <a
-              href="/"
-              className="text-sm text-muted-foreground hover:text-primary transition-colors"
+          <div className="mt-6 space-y-3 text-center">
+            <button
+              type="button"
+              onClick={() => {
+                setIsSignUp(!isSignUp);
+                setError(null);
+                setSuccess(null);
+              }}
+              className="text-sm text-primary hover:underline"
             >
-              ← Retour au site
-            </a>
+              {isSignUp ? 'Déjà un compte ? Se connecter' : "Pas encore de compte ? S'inscrire"}
+            </button>
+            <div>
+              <a
+                href="/"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                ← Retour au site
+              </a>
+            </div>
           </div>
         </div>
       </motion.div>
