@@ -125,22 +125,14 @@ export const AdminApplications = () => {
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodedMessage}`;
     
-    // Try to open WhatsApp - if blocked, show a toast with a clickable link
-    const newWindow = window.open(whatsappUrl, '_blank');
-    if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-      // Pop-up was blocked, copy link to clipboard and show toast
-      navigator.clipboard.writeText(whatsappUrl).then(() => {
-        toast({
-          title: 'Lien WhatsApp copié',
-          description: 'Le pop-up a été bloqué. Le lien WhatsApp a été copié dans votre presse-papier.',
-        });
-      }).catch(() => {
-        toast({
-          title: 'Ouvrir WhatsApp manuellement',
-          description: `Copiez ce lien: ${whatsappUrl}`,
-        });
-      });
-    }
+    // Use a temporary <a> tag to navigate - works even when pop-ups are blocked
+    const link = document.createElement('a');
+    link.href = whatsappUrl;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const handleSendResponse = async () => {
