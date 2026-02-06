@@ -114,14 +114,20 @@ export const AdminMessages = () => {
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://web.whatsapp.com/send?phone=${formattedPhone}&text=${encodedMessage}`;
     
-    // Use a temporary <a> tag to navigate - works even when pop-ups are blocked
-    const link = document.createElement('a');
-    link.href = whatsappUrl;
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Use window.open with noopener to avoid COOP (Cross-Origin Opener Policy) blocking in Firefox
+    const newWindow = window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+    if (!newWindow) {
+      // Fallback: copy URL to clipboard and notify user
+      navigator.clipboard.writeText(whatsappUrl).then(() => {
+        toast({
+          title: 'Lien copié',
+          description: 'Le lien WhatsApp a été copié dans le presse-papiers. Collez-le dans un nouvel onglet.',
+        });
+      }).catch(() => {
+        // Last fallback: prompt user with the URL
+        window.location.href = whatsappUrl;
+      });
+    }
   };
 
   const handleSendResponse = async () => {
