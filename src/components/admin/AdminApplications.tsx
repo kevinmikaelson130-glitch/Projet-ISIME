@@ -123,7 +123,7 @@ export const AdminApplications = () => {
   const openWhatsApp = (phone: string, message: string) => {
     const formattedPhone = formatPhoneForWhatsApp(phone);
     const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodedMessage}`;
+    const whatsappUrl = `https://web.whatsapp.com/send?phone=${formattedPhone}&text=${encodedMessage}`;
     
     // Use a temporary <a> tag to navigate - works even when pop-ups are blocked
     const link = document.createElement('a');
