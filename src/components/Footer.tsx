@@ -40,7 +40,7 @@ export const Footer = () => {
             </p>
             <div className="flex items-center gap-4">
               <a
-                href="https://www.facebook.com/instiut.ISIME"
+                href="https://www.facebook.com/instiut.isime"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary transition-colors"
