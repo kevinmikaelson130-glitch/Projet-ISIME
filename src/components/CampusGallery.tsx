@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import campusGraduation from "@/assets/campus-graduation.jpeg";
 import campusStudents from "@/assets/campus-students.jpeg";
-import campusTeam from "@/assets/campus-team.jpeg";
+import campusCeremony from "@/assets/campus-ceremony.jpg";
 
 const galleryImages = [
   {
@@ -15,9 +15,9 @@ const galleryImages = [
     title: "Vie Étudiante"
   },
   {
-    src: campusTeam,
-    alt: "Équipe ISIME en sortie",
-    title: "Esprit d'Équipe"
+    src: campusCeremony,
+    alt: "Cérémonie officielle ISIME",
+    title: "Cérémonie Officielle"
   }
 ];
 
