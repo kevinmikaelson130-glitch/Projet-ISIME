@@ -9,11 +9,13 @@ import { ApplicationForm } from "@/components/ApplicationForm";
 import { Admissions } from "@/components/Admissions";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
+import { ScrollToTop } from "@/components/ScrollToTop";
 
 const Index = () => {
   return (
     <div className="min-h-screen">
       <Header />
+      <ScrollToTop />
       <main>
         <Hero />
         <WhyChooseUs />
