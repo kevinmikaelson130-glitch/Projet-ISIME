@@ -1,6 +1,6 @@
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
-import { Camera, FileText, Home, CreditCard, FolderOpen, CheckCircle2, ArrowRight } from "lucide-react";
+import { useRef, useState } from "react";
+import { Camera, FileText, Home, CreditCard, FolderOpen, CheckCircle2, ArrowRight, Landmark, Copy } from "lucide-react";
 
 const documents = [
   { icon: Camera, label: "4 Photos d'identité" },
@@ -20,6 +20,13 @@ const steps = [
 export const Admissions = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText("00008 00005 05003025616 85");
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <section id="admissions" className="section-padding bg-muted/30" ref={ref}>
@@ -114,6 +121,44 @@ export const Admissions = () => {
                     </div>
                   </motion.div>
                 ))}
+              </div>
+            </motion.div>
+
+            {/* Bank Payment Info */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="premium-card p-6 mb-8 border-l-4 border-primary"
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <Landmark className="w-5 h-5 text-primary" />
+                </div>
+                <h3 className="font-semibold text-lg">Paiement des frais de scolarité</h3>
+              </div>
+              <p className="text-muted-foreground text-sm mb-4">
+                Le paiement se fera uniquement par dépôt (espèce, chèque) ou virement bancaire auprès de la banque <strong className="text-foreground">BRED</strong>.
+              </p>
+              <div className="space-y-3 bg-muted/50 rounded-xl p-4">
+                <div>
+                  <span className="text-xs text-muted-foreground uppercase tracking-wider">Numéro de compte</span>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="font-mono font-semibold text-foreground">BRED N° 00008 00005 05003025616 85</span>
+                    <button
+                      onClick={handleCopy}
+                      className="p-1.5 rounded-lg hover:bg-primary/10 transition-colors"
+                      title="Copier le numéro"
+                    >
+                      <Copy className="w-4 h-4 text-primary" />
+                    </button>
+                    {copied && <span className="text-xs text-primary">Copié !</span>}
+                  </div>
+                </div>
+                <div>
+                  <span className="text-xs text-muted-foreground uppercase tracking-wider">Titulaire du compte</span>
+                  <p className="font-semibold text-foreground mt-1">LE GENIE DU MEUBLE</p>
+                </div>
               </div>
             </motion.div>
 
