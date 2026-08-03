@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Lock, Mail, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
@@ -24,18 +24,25 @@ const AdminLogin = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const { signIn, signUp, user, isAdmin, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const nextParam = searchParams.get('next');
+  const safeNext = nextParam && nextParam.startsWith('/') && !nextParam.startsWith('//') ? nextParam : null;
 
   useEffect(() => {
+    if (!authLoading && user && safeNext) {
+      window.location.href = safeNext;
+      return;
+    }
     if (!authLoading && user && isAdmin) {
       navigate('/admin');
     }
-  }, [user, isAdmin, authLoading, navigate]);
+  }, [user, isAdmin, authLoading, navigate, safeNext]);
 
   useEffect(() => {
-    if (!authLoading && user && !isAdmin) {
+    if (!authLoading && user && !isAdmin && !safeNext) {
       setError("Ce compte n'a pas les droits administrateur. Contactez l'administrateur principal pour obtenir l'accès.");
     }
-  }, [user, isAdmin, authLoading]);
+  }, [user, isAdmin, authLoading, safeNext]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
