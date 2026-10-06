@@ -3,15 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   Users, MessageSquare, LogOut, Menu, X, 
-  FileText, ChevronRight, Home
+  FileText, ChevronRight, Home, Newspaper
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { AdminApplications } from '@/components/admin/AdminApplications';
 import { AdminMessages } from '@/components/admin/AdminMessages';
+import { AdminNews } from '@/components/admin/AdminNews';
 import isimeLogo from '@/assets/isime-logo.jpeg';
 
-type Tab = 'applications' | 'messages';
+type Tab = 'applications' | 'messages' | 'news';
 
 const Admin = () => {
   const { user, isAdmin, isLoading, signOut } = useAuth();
@@ -45,6 +46,7 @@ const Admin = () => {
   const tabs = [
     { id: 'applications' as Tab, label: 'Candidatures', icon: FileText },
     { id: 'messages' as Tab, label: 'Messages', icon: MessageSquare },
+    { id: 'news' as Tab, label: 'Actualités', icon: Newspaper },
   ];
 
   return (
@@ -140,12 +142,12 @@ const Admin = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold">
-                {activeTab === 'applications' ? 'Candidatures' : 'Messages'}
+                {activeTab === 'applications' ? 'Candidatures' : activeTab === 'messages' ? 'Messages' : 'Actualités'}
               </h1>
               <p className="text-muted-foreground text-sm">
                 {activeTab === 'applications' 
                   ? 'Gérez les demandes de candidature' 
-                  : 'Répondez aux messages des visiteurs'}
+                  : activeTab === 'messages' ? 'Répondez aux messages des visiteurs' : 'Publiez les nouvelles du site'}
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -164,6 +166,7 @@ const Admin = () => {
         <div className="p-6">
           {activeTab === 'applications' && <AdminApplications />}
           {activeTab === 'messages' && <AdminMessages />}
+          {activeTab === 'news' && <AdminNews />}
         </div>
       </main>
     </div>
