@@ -222,7 +222,7 @@ export const ApplicationForm = () => {
                       <FormItem>
                         <FormLabel>Téléphone *</FormLabel>
                         <FormControl>
-                          <Input placeholder="+243 XXX XXX XXX" {...field} />
+                          <Input placeholder="+261 34 12 345 67" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -248,7 +248,7 @@ export const ApplicationForm = () => {
                       <FormItem>
                         <FormLabel>Nationalité *</FormLabel>
                         <FormControl>
-                          <Input placeholder="Congolaise" {...field} />
+                          <Input placeholder="Malagasy" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
