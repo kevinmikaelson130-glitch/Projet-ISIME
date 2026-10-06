@@ -10,6 +10,7 @@ import { ApplicationForm } from "@/components/ApplicationForm";
 import { Admissions } from "@/components/Admissions";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
+import { News } from "@/components/News";
 import { ScrollToTop } from "@/components/ScrollToTop";
 
 const Index = () => {
@@ -27,6 +28,7 @@ const Index = () => {
         <CampusGallery />
         <ApplicationForm />
         <Admissions />
+        <News />
         <Contact />
       </main>
       <Footer />

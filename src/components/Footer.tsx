@@ -119,10 +119,10 @@ export const Footer = () => {
               © {new Date().getFullYear()} ISIME. Tous droits réservés.
             </p>
             <div className="flex items-center gap-6 text-sm text-white/60">
-              <a href="#" className="hover:text-primary transition-colors">
+              <a href="/mentions-legales" className="hover:text-primary transition-colors">
                 Mentions légales
               </a>
-              <a href="#" className="hover:text-primary transition-colors">
+              <a href="/confidentialite" className="hover:text-primary transition-colors">
                 Politique de confidentialité
               </a>
             </div>
