@@ -163,13 +163,9 @@ export const AdminApplications = () => {
         variant: 'destructive',
       });
     } else {
-      // Open WhatsApp with the response message
-      if (response.trim()) {
-        openWhatsApp(selectedApplication.phone, response);
-      }
       toast({
         title: 'Succès',
-        description: 'La réponse a été enregistrée et WhatsApp ouvert',
+        description: 'La réponse a été envoyée directement au candidat',
       });
       setIsResponseOpen(false);
       fetchApplications();
@@ -466,23 +462,33 @@ export const AdminApplications = () => {
                 />
               </div>
 
-              <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setIsResponseOpen(false)}>
-                  Annuler
+              <div className="flex justify-between gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => openWhatsApp(selectedApplication.phone, response)}
+                  disabled={!response.trim()}
+                >
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  WhatsApp
                 </Button>
-                <Button onClick={handleSendResponse} disabled={isSending} className="bg-green-600 hover:bg-green-700">
-                  {isSending ? (
-                    <>
-                      <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>
-                      Envoi...
-                    </>
-                  ) : (
-                    <>
-                      <MessageCircle className="w-4 h-4 mr-2" />
-                      Envoyer via WhatsApp
-                    </>
-                  )}
-                </Button>
+                <div className="flex gap-2">
+                  <Button variant="outline" onClick={() => setIsResponseOpen(false)}>
+                    Annuler
+                  </Button>
+                  <Button onClick={handleSendResponse} disabled={isSending || !response.trim()}>
+                    {isSending ? (
+                      <>
+                        <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>
+                        Envoi...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4 mr-2" />
+                        Envoyer la réponse
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
             </div>
           )}
