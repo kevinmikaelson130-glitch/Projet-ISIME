@@ -34,6 +34,7 @@ export type Database = {
           program: string
           responded_at: string | null
           status: string | null
+          tracking_code: string | null
           updated_at: string
         }
         Insert: {
@@ -55,6 +56,7 @@ export type Database = {
           program: string
           responded_at?: string | null
           status?: string | null
+          tracking_code?: string | null
           updated_at?: string
         }
         Update: {
@@ -76,6 +78,7 @@ export type Database = {
           program?: string
           responded_at?: string | null
           status?: string | null
+          tracking_code?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -196,6 +199,17 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      track_application: {
+        Args: { _code: string }
+        Returns: {
+          admin_response: string
+          created_at: string
+          first_name: string
+          program: string
+          responded_at: string
+          status: string
+        }[]
       }
     }
     Enums: {
