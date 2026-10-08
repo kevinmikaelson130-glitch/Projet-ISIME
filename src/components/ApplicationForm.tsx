@@ -58,6 +58,7 @@ const educationLevels = [
 
 export const ApplicationForm = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [trackingCode, setTrackingCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -79,8 +80,15 @@ export const ApplicationForm = () => {
 
   const onSubmit = async (data: ApplicationFormData) => {
     setIsLoading(true);
-    
+    const code =
+      "ISIME-" +
+      Array.from(crypto.getRandomValues(new Uint8Array(4)))
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("")
+        .toUpperCase();
+
     const { error } = await supabase.from("applications").insert({
+      tracking_code: code,
       first_name: data.first_name,
       last_name: data.last_name,
       email: data.email,
@@ -107,10 +115,11 @@ export const ApplicationForm = () => {
       return;
     }
 
+    setTrackingCode(code);
     setIsSubmitted(true);
     toast({
       title: "Candidature envoyée !",
-      description: "Nous avons bien reçu votre candidature.",
+      description: `Votre numéro de suivi : ${code}`,
     });
   };
 
@@ -127,13 +136,30 @@ export const ApplicationForm = () => {
             <h2 className="text-3xl font-bold text-foreground mb-4">
               Candidature Envoyée !
             </h2>
-            <p className="text-muted-foreground text-lg mb-8">
-              Merci pour votre candidature. Notre équipe l'examinera dans les plus brefs délais. 
-              Vous recevrez une réponse par email.
+            <p className="text-muted-foreground text-lg mb-6">
+              Merci pour votre candidature. Conservez précieusement votre numéro de suivi :
             </p>
-            <Button onClick={() => setIsSubmitted(false)} variant="outline">
-              Soumettre une autre candidature
-            </Button>
+            <div className="inline-flex items-center gap-3 bg-card border border-primary/30 rounded-xl px-6 py-4 mb-8">
+              <span className="text-2xl font-mono font-bold text-primary tracking-wider">{trackingCode}</span>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  navigator.clipboard?.writeText(trackingCode);
+                  toast({ title: "Numéro copié" });
+                }}
+              >
+                Copier
+              </Button>
+            </div>
+            <div className="flex flex-wrap gap-3 justify-center">
+              <Button asChild>
+                <a href={`/suivi?code=${trackingCode}`}>Suivre ma candidature</a>
+              </Button>
+              <Button onClick={() => setIsSubmitted(false)} variant="outline">
+                Soumettre une autre candidature
+              </Button>
+            </div>
           </motion.div>
         </div>
       </section>

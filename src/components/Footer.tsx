@@ -122,6 +122,7 @@ export const Footer = () => {
               <a href="/mentions-legales" className="hover:text-primary transition-colors">
                 Mentions légales
               </a>
+              <a href="/suivi" className="hover:text-primary transition-colors">Suivi de candidature</a>
               <a href="/confidentialite" className="hover:text-primary transition-colors">
                 Politique de confidentialité
               </a>
