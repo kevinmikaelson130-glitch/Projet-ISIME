@@ -30,6 +30,7 @@ import { fr } from 'date-fns/locale';
 interface Application {
   id: string;
   first_name: string;
+  tracking_code: string | null;
   last_name: string;
   email: string;
   phone: string;
@@ -87,6 +88,7 @@ export const AdminApplications = () => {
       app.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       app.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       app.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (app.tracking_code ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
       app.program.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesStatus = statusFilter === 'all' || app.status === statusFilter;
@@ -286,6 +288,7 @@ export const AdminApplications = () => {
                       <div>
                         <p className="font-medium">{application.first_name} {application.last_name}</p>
                         <p className="text-sm text-muted-foreground">{application.email}</p>
+                        {application.tracking_code && <p className="text-xs font-mono text-primary">{application.tracking_code}</p>}
                       </div>
                     </td>
                     <td className="p-4">
