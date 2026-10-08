@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Search, Loader2, ArrowLeft } from "lucide-react";
+import { Search, Loader2, ArrowLeft, Phone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -99,6 +99,22 @@ const Track = () => {
             )}
           </div>
         )}
+
+        <div className="bg-card rounded-2xl shadow-xl p-6 mt-8 flex items-start gap-4">
+          <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+            <Phone className="w-5 h-5 text-primary" />
+          </div>
+          <div>
+            <p className="font-semibold text-foreground mb-1">Une question sur votre dossier ?</p>
+            <p className="text-sm text-muted-foreground mb-3">
+              Appelez l'ISIME au 038 93 946 11 (lun - ven, 8h00 - 17h00) et indiquez votre numéro de suivi.
+            </p>
+            <a href="tel:0389394611" className="btn-primary">
+              <Phone className="w-4 h-4" />
+              <span>Appeler le 038 93 946 11</span>
+            </a>
+          </div>
+        </div>
       </div>
     </main>
   );
