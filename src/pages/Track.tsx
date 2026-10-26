@@ -5,7 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-type Result = {
+type ApplicationResult = {
+  kind: "application";
   first_name: string;
   program: string;
   status: string | null;
@@ -14,12 +15,37 @@ type Result = {
   responded_at: string | null;
 };
 
+type MessageResult = {
+  kind: "message";
+  name: string;
+  subject: string;
+  message: string;
+  status: string | null;
+  admin_response: string | null;
+  created_at: string;
+  responded_at: string | null;
+};
+
+type Result = ApplicationResult | MessageResult;
+
 const statusLabels: Record<string, string> = {
   pending: "En attente d'examen",
   reviewing: "En cours d'examen",
   accepted: "Acceptée",
   rejected: "Refusée",
   responded: "Réponse envoyée",
+};
+
+const messageStatusLabels: Record<string, string> = {
+  pending: "En attente de réponse",
+  responded: "Réponse disponible",
+};
+
+const subjectLabels: Record<string, string> = {
+  admission: "Demande d'admission",
+  information: "Demande d'information",
+  visite: "Visite du campus",
+  autre: "Autre",
 };
 
 const Track = () => {
@@ -30,14 +56,25 @@ const Track = () => {
   const [notFound, setNotFound] = useState(false);
 
   const search = async (value: string) => {
-    if (!value.trim()) return;
+    const clean = value.trim().toUpperCase();
+    if (!clean) return;
     setLoading(true);
     setNotFound(false);
     setResult(null);
-    const { data } = await supabase.rpc("track_application", { _code: value });
-    setLoading(false);
+
+    if (clean.startsWith("MSG-")) {
+      const { data } = await supabase.rpc("track_message", { _code: clean });
+      const row = Array.isArray(data) ? data[0] : null;
+      setLoading(false);
+      if (row) setResult({ kind: "message", ...(row as Omit<MessageResult, "kind">) });
+      else setNotFound(true);
+      return;
+    }
+
+    const { data } = await supabase.rpc("track_application", { _code: clean });
     const row = Array.isArray(data) ? data[0] : null;
-    if (row) setResult(row as Result);
+    setLoading(false);
+    if (row) setResult({ kind: "application", ...(row as Omit<ApplicationResult, "kind">) });
     else setNotFound(true);
   };
 
@@ -52,9 +89,9 @@ const Track = () => {
         <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary mb-8">
           <ArrowLeft className="w-4 h-4" /> Retour à l'accueil
         </Link>
-        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">Suivi de candidature</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">Suivi de candidature et de message</h1>
         <p className="text-muted-foreground mb-8">
-          Saisissez le numéro de suivi reçu après l'envoi de votre candidature (ex. ISIME-1A2B3C4D).
+          Saisissez le numéro reçu après l'envoi de votre candidature (ex. ISIME-1A2B3C4D) ou de votre message (ex. MSG-1A2B3C4D).
         </p>
         <form
           onSubmit={(e) => {
@@ -63,7 +100,7 @@ const Track = () => {
           }}
           className="flex gap-3 mb-8"
         >
-          <Input value={code} onChange={(e) => setCode(e.target.value)} placeholder="ISIME-XXXXXXXX" className="font-mono" />
+          <Input value={code} onChange={(e) => setCode(e.target.value)} placeholder="ISIME-XXXXXXXX ou MSG-XXXXXXXX" className="font-mono" aria-label="Numéro de suivi" />
           <Button type="submit" disabled={loading}>
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
             <span className="ml-2">Rechercher</span>
@@ -72,11 +109,11 @@ const Track = () => {
 
         {notFound && (
           <p className="bg-destructive/10 text-destructive rounded-xl p-4">
-            Aucune candidature trouvée avec ce numéro. Vérifiez qu'il est bien recopié.
+            Aucun dossier trouvé avec ce numéro. Vérifiez qu'il est bien recopié.
           </p>
         )}
 
-        {result && (
+        {result?.kind === "application" && (
           <div className="bg-card rounded-2xl shadow-xl p-6 space-y-4">
             <p className="text-lg">Bonjour <strong>{result.first_name}</strong>,</p>
             <div>
@@ -96,6 +133,39 @@ const Track = () => {
                 <p className="text-sm text-muted-foreground">Réponse de l'ISIME</p>
                 <p className="whitespace-pre-wrap">{result.admin_response}</p>
               </div>
+            )}
+          </div>
+        )}
+
+        {result?.kind === "message" && (
+          <div className="bg-card rounded-2xl shadow-xl p-6 space-y-4">
+            <p className="text-lg">Bonjour <strong>{result.name}</strong>,</p>
+            <div>
+              <p className="text-sm text-muted-foreground">Sujet</p>
+              <p className="font-medium">{subjectLabels[result.subject] ?? result.subject}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Votre message du {new Date(result.created_at).toLocaleDateString("fr-FR")}</p>
+              <p className="whitespace-pre-wrap text-muted-foreground">{result.message}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Statut</p>
+              <p className="font-semibold text-primary">
+                {result.admin_response ? messageStatusLabels.responded : messageStatusLabels.pending}
+              </p>
+            </div>
+            {result.admin_response ? (
+              <div className="p-4 bg-primary/5 border border-primary/20 rounded-xl">
+                <p className="text-sm text-muted-foreground mb-1">Réponse de l'ISIME</p>
+                <p className="whitespace-pre-wrap">{result.admin_response}</p>
+                {result.responded_at && (
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Répondu le {new Date(result.responded_at).toLocaleDateString("fr-FR")}
+                  </p>
+                )}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">Nous n'avons pas encore répondu. Revenez bientôt avec le même numéro.</p>
             )}
           </div>
         )}
