@@ -150,15 +150,9 @@ export const AdminMessages = () => {
         variant: 'destructive',
       });
     } else {
-      // Open WhatsApp with the response message if phone is available
-      if (response.trim() && selectedMessage.phone) {
-        openWhatsApp(selectedMessage.phone, response);
-      }
       toast({
         title: 'Succès',
-        description: selectedMessage.phone 
-          ? 'La réponse a été enregistrée et WhatsApp ouvert' 
-          : 'La réponse a été enregistrée (pas de téléphone disponible)',
+        description: 'La réponse a été enregistrée directement',
       });
       setIsResponseOpen(false);
       fetchMessages();
@@ -392,38 +386,37 @@ export const AdminMessages = () => {
                 />
               </div>
 
-              {selectedMessage?.phone && (
-                <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
-                  <Phone className="w-4 h-4" />
-                  <span>La réponse sera envoyée via WhatsApp au {selectedMessage.phone}</span>
-                </div>
-              )}
-
-              <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setIsResponseOpen(false)}>
-                  Annuler
-                </Button>
-                <Button 
-                  onClick={handleSendResponse} 
-                  disabled={isSending || !response.trim()}
-                  className={selectedMessage?.phone ? "bg-green-600 hover:bg-green-700" : ""}
-                >
-                  {isSending ? (
-                    <>
-                      <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>
-                      Envoi...
-                    </>
-                  ) : (
-                    <>
-                      {selectedMessage?.phone ? (
-                        <MessageCircle className="w-4 h-4 mr-2" />
-                      ) : (
+              <div className="flex justify-between gap-2">
+                {selectedMessage.phone ? (
+                  <Button
+                    variant="outline"
+                    onClick={() => openWhatsApp(selectedMessage.phone!, response)}
+                    disabled={!response.trim()}
+                  >
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    WhatsApp
+                  </Button>
+                ) : (
+                  <span />
+                )}
+                <div className="flex gap-2">
+                  <Button variant="outline" onClick={() => setIsResponseOpen(false)}>
+                    Annuler
+                  </Button>
+                  <Button onClick={handleSendResponse} disabled={isSending || !response.trim()}>
+                    {isSending ? (
+                      <>
+                        <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>
+                        Envoi...
+                      </>
+                    ) : (
+                      <>
                         <Send className="w-4 h-4 mr-2" />
-                      )}
-                      {selectedMessage?.phone ? 'Envoyer via WhatsApp' : 'Enregistrer'}
-                    </>
-                  )}
-                </Button>
+                        Envoyer la réponse
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
             </div>
           )}
