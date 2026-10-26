@@ -22,6 +22,7 @@ export const Contact = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [trackingCode, setTrackingCode] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -35,21 +36,30 @@ export const Contact = () => {
     setIsSubmitting(true);
 
     try {
+      const code =
+        "MSG-" +
+        Array.from(crypto.getRandomValues(new Uint8Array(4)))
+          .map((b) => b.toString(16).padStart(2, "0"))
+          .join("")
+          .toUpperCase();
+
       const { error } = await supabase.from('contact_messages').insert({
         name: formData.name,
         email: formData.email,
         phone: formData.phone || null,
         subject: formData.subject,
         message: formData.message,
+        tracking_code: code,
       });
 
       if (error) throw error;
 
       toast({
         title: "Message envoyé !",
-        description: "Nous vous répondrons dans les plus brefs délais.",
+        description: `Votre numéro de suivi : ${code}`,
       });
 
+      setTrackingCode(code);
       setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
     } catch (error) {
       console.error('Error sending message:', error);
@@ -157,6 +167,30 @@ export const Contact = () => {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
+            {trackingCode && (
+              <div className="premium-card p-6 mb-6 border border-primary/30 space-y-3" role="status">
+                <p className="font-semibold text-lg">Message envoyé !</p>
+                <p className="text-muted-foreground text-sm">
+                  Gardez ce numéro : il vous permet de lire notre réponse sur la page de suivi.
+                </p>
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="text-xl font-mono font-bold text-primary tracking-wider">{trackingCode}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard?.writeText(trackingCode);
+                      toast({ title: "Numéro copié" });
+                    }}
+                    className="px-3 py-1.5 rounded-lg border border-border text-sm hover:bg-muted transition-colors"
+                  >
+                    Copier
+                  </button>
+                  <a href={`/suivi?code=${trackingCode}`} className="btn-primary text-sm">
+                    Voir la réponse
+                  </a>
+                </div>
+              </div>
+            )}
             <form onSubmit={handleSubmit} className="premium-card p-8 space-y-6">
               <h3 className="font-semibold text-xl mb-2">Envoyez-nous un message</h3>
 
