@@ -31,7 +31,8 @@ interface ContactMessage {
   id: string;
   name: string;
   email: string;
-  phone?: string;
+  phone?: string | null;
+  tracking_code?: string | null;
   subject: string;
   message: string;
   status: string | null;
@@ -80,7 +81,8 @@ export const AdminMessages = () => {
     const matchesSearch = 
       msg.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       msg.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      msg.subject.toLowerCase().includes(searchTerm.toLowerCase());
+      msg.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (msg.tracking_code ?? '').toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesStatus = statusFilter === 'all' || msg.status === statusFilter;
     
@@ -152,7 +154,9 @@ export const AdminMessages = () => {
     } else {
       toast({
         title: 'Succès',
-        description: 'La réponse a été enregistrée directement',
+        description: selectedMessage.tracking_code
+          ? `Réponse publiée : la personne la voit sur la page de suivi avec ${selectedMessage.tracking_code}`
+          : 'Réponse enregistrée (ancien message sans numéro de suivi : utilisez WhatsApp pour la transmettre)',
       });
       setIsResponseOpen(false);
       fetchMessages();
@@ -195,7 +199,7 @@ export const AdminMessages = () => {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
           <Input
-            placeholder="Rechercher par nom, email ou sujet..."
+            placeholder="Rechercher par nom, email, sujet ou numéro..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
@@ -262,6 +266,7 @@ export const AdminMessages = () => {
                       {getStatusBadge(message.status)}
                     </div>
                     <p className="text-sm text-muted-foreground">{message.email}</p>
+                    {message.tracking_code && <p className="text-xs font-mono text-primary">{message.tracking_code}</p>}
                     <p className="text-sm font-medium mt-1">{getSubjectLabel(message.subject)}</p>
                     <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{message.message}</p>
                     <p className="text-xs text-muted-foreground mt-2">
@@ -374,6 +379,16 @@ export const AdminMessages = () => {
                 <p className="text-sm text-muted-foreground mt-1">
                   Sujet: <span className="font-medium text-foreground">{getSubjectLabel(selectedMessage.subject)}</span>
                 </p>
+                {selectedMessage.tracking_code ? (
+                  <p className="text-xs text-muted-foreground mt-2">
+                    La personne lira votre réponse sur la page de suivi avec le numéro{' '}
+                    <span className="font-mono text-primary">{selectedMessage.tracking_code}</span>.
+                  </p>
+                ) : (
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Ancien message sans numéro de suivi : utilisez WhatsApp pour transmettre la réponse.
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
