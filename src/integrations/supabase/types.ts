@@ -137,6 +137,7 @@ export type Database = {
           responded_at: string | null
           status: string | null
           subject: string
+          tracking_code: string | null
           updated_at: string
         }
         Insert: {
@@ -150,6 +151,7 @@ export type Database = {
           responded_at?: string | null
           status?: string | null
           subject: string
+          tracking_code?: string | null
           updated_at?: string
         }
         Update: {
@@ -163,6 +165,7 @@ export type Database = {
           responded_at?: string | null
           status?: string | null
           subject?: string
+          tracking_code?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -209,6 +212,18 @@ export type Database = {
           program: string
           responded_at: string
           status: string
+        }[]
+      }
+      track_message: {
+        Args: { _code: string }
+        Returns: {
+          admin_response: string
+          created_at: string
+          message: string
+          name: string
+          responded_at: string
+          status: string
+          subject: string
         }[]
       }
     }

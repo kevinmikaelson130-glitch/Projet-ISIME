@@ -159,7 +159,7 @@ var respond_to_message_default = defineTool5({
   handler: async ({ id, admin_response }, ctx) => {
     if (!ctx.isAuthenticated()) return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
     const supabase = supabaseForUser(ctx);
-    const { data, error } = await supabase.from("contact_messages").update({ admin_response, status: "answered", responded_at: (/* @__PURE__ */ new Date()).toISOString() }).eq("id", id).select().maybeSingle();
+    const { data, error } = await supabase.from("contact_messages").update({ admin_response, status: "responded", responded_at: (/* @__PURE__ */ new Date()).toISOString() }).eq("id", id).select().maybeSingle();
     if (error) return { content: [{ type: "text", text: error.message }], isError: true };
     if (!data) return { content: [{ type: "text", text: "Message not found or not permitted" }], isError: true };
     return { content: [{ type: "text", text: JSON.stringify(data) }], structuredContent: { message: data } };

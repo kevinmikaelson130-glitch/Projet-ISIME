@@ -16,7 +16,7 @@ export default defineTool({
     const supabase = supabaseForUser(ctx);
     const { data, error } = await supabase
       .from("contact_messages")
-      .update({ admin_response, status: "answered", responded_at: new Date().toISOString() })
+      .update({ admin_response, status: "responded", responded_at: new Date().toISOString() })
       .eq("id", id)
       .select()
       .maybeSingle();
