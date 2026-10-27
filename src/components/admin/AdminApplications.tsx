@@ -26,6 +26,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { ApplicationDocuments } from './ApplicationDocuments';
 
 interface Application {
   id: string;
@@ -402,6 +403,8 @@ export const AdminApplications = () => {
                   </div>
                 )}
               </div>
+
+              <ApplicationDocuments applicationId={selectedApplication.id} />
 
               {selectedApplication.admin_response && (
                 <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg">
