@@ -3,9 +3,16 @@ import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Send, CheckCircle, Loader2 } from "lucide-react";
+import { Send, CheckCircle, Loader2, Upload, FileCheck2, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import {
+  APPLICATION_DOCUMENTS_BUCKET,
+  DOCUMENT_TYPES,
+  type DocumentTypeKey,
+  documentPath,
+  validateDocumentFile,
+} from "@/lib/applicationDocuments";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -60,6 +67,10 @@ export const ApplicationForm = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [trackingCode, setTrackingCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [files, setFiles] = useState<Partial<Record<DocumentTypeKey, File>>>({});
+  const [fileErrors, setFileErrors] = useState<Partial<Record<DocumentTypeKey, string>>>({});
+  const [uploadedCount, setUploadedCount] = useState(0);
+  const [failedUploads, setFailedUploads] = useState<string[]>([]);
   const { toast } = useToast();
 
   const form = useForm<ApplicationFormData>({
@@ -78,8 +89,24 @@ export const ApplicationForm = () => {
     },
   });
 
+  const handleFileChange = (key: DocumentTypeKey, file: File | undefined) => {
+    setFileErrors((prev) => ({ ...prev, [key]: undefined }));
+    if (!file) {
+      setFiles((prev) => ({ ...prev, [key]: undefined }));
+      return;
+    }
+    const err = validateDocumentFile(file);
+    if (err) {
+      setFileErrors((prev) => ({ ...prev, [key]: err }));
+      setFiles((prev) => ({ ...prev, [key]: undefined }));
+      return;
+    }
+    setFiles((prev) => ({ ...prev, [key]: file }));
+  };
+
   const onSubmit = async (data: ApplicationFormData) => {
     setIsLoading(true);
+    const applicationId = crypto.randomUUID();
     const code =
       "ISIME-" +
       Array.from(crypto.getRandomValues(new Uint8Array(4)))
@@ -88,6 +115,7 @@ export const ApplicationForm = () => {
         .toUpperCase();
 
     const { error } = await supabase.from("applications").insert({
+      id: applicationId,
       tracking_code: code,
       first_name: data.first_name,
       last_name: data.last_name,
@@ -104,9 +132,8 @@ export const ApplicationForm = () => {
       motivation: "N/A",
     });
 
-    setIsLoading(false);
-
     if (error) {
+      setIsLoading(false);
       toast({
         variant: "destructive",
         title: "Erreur",
@@ -115,8 +142,27 @@ export const ApplicationForm = () => {
       return;
     }
 
+    const chosen = DOCUMENT_TYPES.filter((d) => files[d.key]);
+    const failed: string[] = [];
+    let sent = 0;
+    for (const doc of chosen) {
+      const file = files[doc.key] as File;
+      const { error: uploadError } = await supabase.storage
+        .from(APPLICATION_DOCUMENTS_BUCKET)
+        .upload(documentPath(applicationId, doc.key, file.name), file, {
+          contentType: file.type || undefined,
+          upsert: false,
+        });
+      if (uploadError) failed.push(doc.label);
+      else sent++;
+    }
+
+    setIsLoading(false);
+    setUploadedCount(sent);
+    setFailedUploads(failed);
     setTrackingCode(code);
     setIsSubmitted(true);
+    setFiles({});
     toast({
       title: "Candidature envoyée !",
       description: `Votre numéro de suivi : ${code}`,
