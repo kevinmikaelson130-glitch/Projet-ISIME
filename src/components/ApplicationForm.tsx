@@ -198,6 +198,18 @@ export const ApplicationForm = () => {
                 Copier
               </Button>
             </div>
+            {uploadedCount > 0 && (
+              <p className="text-sm text-muted-foreground mb-4 flex items-center justify-center gap-2">
+                <FileCheck2 className="w-4 h-4 text-primary" />
+                {uploadedCount} pièce{uploadedCount > 1 ? "s" : ""} du dossier bien reçue{uploadedCount > 1 ? "s" : ""}.
+              </p>
+            )}
+            {failedUploads.length > 0 && (
+              <p className="text-sm text-destructive mb-4 flex items-center justify-center gap-2">
+                <AlertTriangle className="w-4 h-4" />
+                Non reçu : {failedUploads.join(", ")}. Apportez ces pièces au campus.
+              </p>
+            )}
             <div className="flex flex-wrap gap-3 justify-center">
               <Button asChild>
                 <a href={`/suivi?code=${trackingCode}`}>Suivre ma candidature</a>
@@ -341,7 +353,7 @@ export const ApplicationForm = () => {
                     <FormItem>
                       <FormLabel>Adresse complète *</FormLabel>
                       <FormControl>
-                        <Input placeholder="123 Avenue de l'Université, Kinshasa" {...field} />
+                        <Input placeholder="Lot II A 45, Behoririka, Antananarivo" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -416,6 +428,53 @@ export const ApplicationForm = () => {
                       </FormItem>
                     )}
                   />
+                </div>
+              </div>
+
+              {/* Documents */}
+              <div>
+                <h3 className="text-lg font-semibold text-foreground mb-2 pb-2 border-b">
+                  Pièces du dossier
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Facultatif : envoyez vos pièces en ligne pour éviter de vous déplacer. Formats PDF, JPG, PNG ou WEBP, 5 Mo maximum par fichier. L'enveloppe Kraft timbrée reste à déposer au campus.
+                </p>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {DOCUMENT_TYPES.map((doc) => {
+                    const file = files[doc.key];
+                    const err = fileErrors[doc.key];
+                    const inputId = `doc-${doc.key}`;
+                    return (
+                      <div key={doc.key} className="space-y-1">
+                        <label
+                          htmlFor={inputId}
+                          className={`flex items-center gap-3 p-4 rounded-xl border-2 border-dashed cursor-pointer transition-colors ${
+                            file ? "border-primary/50 bg-primary/5" : "border-border hover:border-primary/40"
+                          }`}
+                        >
+                          {file ? (
+                            <FileCheck2 className="w-6 h-6 text-primary shrink-0" />
+                          ) : (
+                            <Upload className="w-6 h-6 text-muted-foreground shrink-0" />
+                          )}
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-medium text-foreground">{doc.label}</p>
+                            <p className="text-xs text-muted-foreground truncate">
+                              {file ? file.name : "Cliquez pour choisir un fichier"}
+                            </p>
+                          </div>
+                        </label>
+                        <input
+                          id={inputId}
+                          type="file"
+                          accept=".pdf,.jpg,.jpeg,.png,.webp"
+                          className="sr-only"
+                          onChange={(e) => handleFileChange(doc.key, e.target.files?.[0])}
+                        />
+                        {err && <p className="text-sm text-destructive">{err}</p>}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
