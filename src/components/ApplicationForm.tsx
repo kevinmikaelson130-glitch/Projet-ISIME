@@ -3,9 +3,16 @@ import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Send, CheckCircle, Loader2 } from "lucide-react";
+import { Send, CheckCircle, Loader2, Upload, FileCheck2, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import {
+  APPLICATION_DOCUMENTS_BUCKET,
+  DOCUMENT_TYPES,
+  type DocumentTypeKey,
+  documentPath,
+  validateDocumentFile,
+} from "@/lib/applicationDocuments";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -60,6 +67,10 @@ export const ApplicationForm = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [trackingCode, setTrackingCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [files, setFiles] = useState<Partial<Record<DocumentTypeKey, File>>>({});
+  const [fileErrors, setFileErrors] = useState<Partial<Record<DocumentTypeKey, string>>>({});
+  const [uploadedCount, setUploadedCount] = useState(0);
+  const [failedUploads, setFailedUploads] = useState<string[]>([]);
   const { toast } = useToast();
 
   const form = useForm<ApplicationFormData>({
@@ -78,8 +89,24 @@ export const ApplicationForm = () => {
     },
   });
 
+  const handleFileChange = (key: DocumentTypeKey, file: File | undefined) => {
+    setFileErrors((prev) => ({ ...prev, [key]: undefined }));
+    if (!file) {
+      setFiles((prev) => ({ ...prev, [key]: undefined }));
+      return;
+    }
+    const err = validateDocumentFile(file);
+    if (err) {
+      setFileErrors((prev) => ({ ...prev, [key]: err }));
+      setFiles((prev) => ({ ...prev, [key]: undefined }));
+      return;
+    }
+    setFiles((prev) => ({ ...prev, [key]: file }));
+  };
+
   const onSubmit = async (data: ApplicationFormData) => {
     setIsLoading(true);
+    const applicationId = crypto.randomUUID();
     const code =
       "ISIME-" +
       Array.from(crypto.getRandomValues(new Uint8Array(4)))
@@ -88,6 +115,7 @@ export const ApplicationForm = () => {
         .toUpperCase();
 
     const { error } = await supabase.from("applications").insert({
+      id: applicationId,
       tracking_code: code,
       first_name: data.first_name,
       last_name: data.last_name,
@@ -104,9 +132,8 @@ export const ApplicationForm = () => {
       motivation: "N/A",
     });
 
-    setIsLoading(false);
-
     if (error) {
+      setIsLoading(false);
       toast({
         variant: "destructive",
         title: "Erreur",
@@ -115,8 +142,27 @@ export const ApplicationForm = () => {
       return;
     }
 
+    const chosen = DOCUMENT_TYPES.filter((d) => files[d.key]);
+    const failed: string[] = [];
+    let sent = 0;
+    for (const doc of chosen) {
+      const file = files[doc.key] as File;
+      const { error: uploadError } = await supabase.storage
+        .from(APPLICATION_DOCUMENTS_BUCKET)
+        .upload(documentPath(applicationId, doc.key, file.name), file, {
+          contentType: file.type || undefined,
+          upsert: false,
+        });
+      if (uploadError) failed.push(doc.label);
+      else sent++;
+    }
+
+    setIsLoading(false);
+    setUploadedCount(sent);
+    setFailedUploads(failed);
     setTrackingCode(code);
     setIsSubmitted(true);
+    setFiles({});
     toast({
       title: "Candidature envoyée !",
       description: `Votre numéro de suivi : ${code}`,
@@ -152,6 +198,18 @@ export const ApplicationForm = () => {
                 Copier
               </Button>
             </div>
+            {uploadedCount > 0 && (
+              <p className="text-sm text-muted-foreground mb-4 flex items-center justify-center gap-2">
+                <FileCheck2 className="w-4 h-4 text-primary" />
+                {uploadedCount} pièce{uploadedCount > 1 ? "s" : ""} du dossier bien reçue{uploadedCount > 1 ? "s" : ""}.
+              </p>
+            )}
+            {failedUploads.length > 0 && (
+              <p className="text-sm text-destructive mb-4 flex items-center justify-center gap-2">
+                <AlertTriangle className="w-4 h-4" />
+                Non reçu : {failedUploads.join(", ")}. Apportez ces pièces au campus.
+              </p>
+            )}
             <div className="flex flex-wrap gap-3 justify-center">
               <Button asChild>
                 <a href={`/suivi?code=${trackingCode}`}>Suivre ma candidature</a>
@@ -295,7 +353,7 @@ export const ApplicationForm = () => {
                     <FormItem>
                       <FormLabel>Adresse complète *</FormLabel>
                       <FormControl>
-                        <Input placeholder="123 Avenue de l'Université, Kinshasa" {...field} />
+                        <Input placeholder="Lot II A 45, Behoririka, Antananarivo" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -370,6 +428,53 @@ export const ApplicationForm = () => {
                       </FormItem>
                     )}
                   />
+                </div>
+              </div>
+
+              {/* Documents */}
+              <div>
+                <h3 className="text-lg font-semibold text-foreground mb-2 pb-2 border-b">
+                  Pièces du dossier
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Facultatif : envoyez vos pièces en ligne pour éviter de vous déplacer. Formats PDF, JPG, PNG ou WEBP, 5 Mo maximum par fichier. L'enveloppe Kraft timbrée reste à déposer au campus.
+                </p>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {DOCUMENT_TYPES.map((doc) => {
+                    const file = files[doc.key];
+                    const err = fileErrors[doc.key];
+                    const inputId = `doc-${doc.key}`;
+                    return (
+                      <div key={doc.key} className="space-y-1">
+                        <label
+                          htmlFor={inputId}
+                          className={`flex items-center gap-3 p-4 rounded-xl border-2 border-dashed cursor-pointer transition-colors ${
+                            file ? "border-primary/50 bg-primary/5" : "border-border hover:border-primary/40"
+                          }`}
+                        >
+                          {file ? (
+                            <FileCheck2 className="w-6 h-6 text-primary shrink-0" />
+                          ) : (
+                            <Upload className="w-6 h-6 text-muted-foreground shrink-0" />
+                          )}
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-medium text-foreground">{doc.label}</p>
+                            <p className="text-xs text-muted-foreground truncate">
+                              {file ? file.name : "Cliquez pour choisir un fichier"}
+                            </p>
+                          </div>
+                        </label>
+                        <input
+                          id={inputId}
+                          type="file"
+                          accept=".pdf,.jpg,.jpeg,.png,.webp"
+                          className="sr-only"
+                          onChange={(e) => handleFileChange(doc.key, e.target.files?.[0])}
+                        />
+                        {err && <p className="text-sm text-destructive">{err}</p>}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
