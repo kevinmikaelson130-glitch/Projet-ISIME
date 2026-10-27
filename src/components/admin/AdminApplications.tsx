@@ -3,9 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, Filter, Eye, MessageSquare, Check, X, 
   Clock, Calendar, User, Mail, Phone, GraduationCap,
-  ChevronDown, Send, MessageCircle
+  ChevronDown, Send, MessageCircle, Download
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { exportApplicationsToExcel } from '@/lib/exportApplications';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -58,6 +59,7 @@ export const AdminApplications = () => {
   const [response, setResponse] = useState('');
   const [newStatus, setNewStatus] = useState('');
   const [isSending, setIsSending] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const { toast } = useToast();
 
   const fetchApplications = async () => {
@@ -96,6 +98,18 @@ export const AdminApplications = () => {
     
     return matchesSearch && matchesStatus;
   });
+
+  const handleExport = async () => {
+    setIsExporting(true);
+    try {
+      await exportApplicationsToExcel(filteredApplications);
+      toast({ title: 'Export terminé', description: `${filteredApplications.length} candidature(s) exportée(s)` });
+    } catch (e) {
+      console.error('Export error:', e);
+      toast({ title: 'Erreur', description: "Impossible de créer le fichier Excel", variant: 'destructive' });
+    }
+    setIsExporting(false);
+  };
 
   const handleViewDetails = (application: Application) => {
     setSelectedApplication(application);
@@ -219,6 +233,14 @@ export const AdminApplications = () => {
             <SelectItem value="rejected">Refusé</SelectItem>
           </SelectContent>
         </Select>
+        <Button
+          variant="outline"
+          onClick={handleExport}
+          disabled={isExporting || filteredApplications.length === 0}
+        >
+          <Download className="w-4 h-4 mr-2" />
+          {isExporting ? 'Export...' : `Exporter Excel (${filteredApplications.length})`}
+        </Button>
       </div>
 
       {/* Stats */}
