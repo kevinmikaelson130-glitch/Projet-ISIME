@@ -29,6 +29,13 @@
       "when": 1793101776788,
       "tag": "0003_application_documents_storage",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793173314660,
+      "tag": "0004_admin_accounts_management",
+      "breakpoints": true
     }
   ]
 }
