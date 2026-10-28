@@ -58,6 +58,7 @@ const Admin = () => {
     { id: 'applications' as Tab, label: 'Candidatures', icon: FileText },
     { id: 'messages' as Tab, label: 'Messages', icon: MessageSquare },
     { id: 'news' as Tab, label: 'Actualités', icon: Newspaper },
+    { id: 'admins' as Tab, label: 'Administrateurs', icon: ShieldCheck },
   ];
 
   return (
@@ -178,6 +179,7 @@ const Admin = () => {
           {activeTab === 'applications' && <AdminApplications />}
           {activeTab === 'messages' && <AdminMessages />}
           {activeTab === 'news' && <AdminNews />}
+          {activeTab === 'admins' && <AdminAccounts />}
         </div>
       </main>
     </div>
