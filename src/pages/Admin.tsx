@@ -3,21 +3,29 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   Users, MessageSquare, LogOut, Menu, X, 
-  FileText, ChevronRight, Home, Newspaper
+  FileText, ChevronRight, Home, Newspaper, BarChart3
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { AdminApplications } from '@/components/admin/AdminApplications';
 import { AdminMessages } from '@/components/admin/AdminMessages';
 import { AdminNews } from '@/components/admin/AdminNews';
+import { AdminStats } from '@/components/admin/AdminStats';
 import isimeLogo from '@/assets/isime-logo.jpeg';
 
-type Tab = 'applications' | 'messages' | 'news';
+type Tab = 'stats' | 'applications' | 'messages' | 'news';
+
+const TAB_HEADINGS: Record<Tab, { title: string; subtitle: string }> = {
+  stats: { title: 'Statistiques', subtitle: "Vue d'ensemble des candidatures et des messages" },
+  applications: { title: 'Candidatures', subtitle: 'Gérez les demandes de candidature' },
+  messages: { title: 'Messages', subtitle: 'Répondez aux messages des visiteurs' },
+  news: { title: 'Actualités', subtitle: 'Publiez les nouvelles du site' },
+};
 
 const Admin = () => {
   const { user, isAdmin, isLoading, signOut } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<Tab>('applications');
+  const [activeTab, setActiveTab] = useState<Tab>('stats');
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   useEffect(() => {
@@ -44,6 +52,7 @@ const Admin = () => {
   }
 
   const tabs = [
+    { id: 'stats' as Tab, label: 'Statistiques', icon: BarChart3 },
     { id: 'applications' as Tab, label: 'Candidatures', icon: FileText },
     { id: 'messages' as Tab, label: 'Messages', icon: MessageSquare },
     { id: 'news' as Tab, label: 'Actualités', icon: Newspaper },
@@ -141,14 +150,8 @@ const Admin = () => {
         <header className="bg-card border-b border-border px-6 py-4 sticky top-0 z-30">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold">
-                {activeTab === 'applications' ? 'Candidatures' : activeTab === 'messages' ? 'Messages' : 'Actualités'}
-              </h1>
-              <p className="text-muted-foreground text-sm">
-                {activeTab === 'applications' 
-                  ? 'Gérez les demandes de candidature' 
-                  : activeTab === 'messages' ? 'Répondez aux messages des visiteurs' : 'Publiez les nouvelles du site'}
-              </p>
+              <h1 className="text-2xl font-bold">{TAB_HEADINGS[activeTab].title}</h1>
+              <p className="text-muted-foreground text-sm">{TAB_HEADINGS[activeTab].subtitle}</p>
             </div>
             <div className="flex items-center gap-3">
               <div className="text-right">
@@ -164,6 +167,12 @@ const Admin = () => {
 
         {/* Content */}
         <div className="p-6">
+          {activeTab === 'stats' && (
+            <AdminStats
+              onOpenApplications={() => setActiveTab('applications')}
+              onOpenMessages={() => setActiveTab('messages')}
+            />
+          )}
           {activeTab === 'applications' && <AdminApplications />}
           {activeTab === 'messages' && <AdminMessages />}
           {activeTab === 'news' && <AdminNews />}

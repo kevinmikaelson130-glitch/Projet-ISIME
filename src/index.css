@@ -45,6 +45,11 @@
 
     --radius: 0.75rem;
 
+    /* Application status colors (admin statistics) */
+    --status-pending: 38 92% 50%;
+    --status-accepted: 142 64% 38%;
+    --status-rejected: 224 23% 30%;
+
     /* Glass Effect Variables */
     --glass-bg: 0 0% 100% / 0.7;
     --glass-border: 0 0% 100% / 0.2;
@@ -105,6 +110,10 @@
     --border: 224 23% 20%;
     --input: 224 23% 20%;
     --ring: 356 98% 50%;
+
+    --status-pending: 38 92% 55%;
+    --status-accepted: 142 55% 45%;
+    --status-rejected: 220 14% 65%;
 
     --glass-bg: 224 23% 14% / 0.7;
     --glass-border: 0 0% 100% / 0.1;
