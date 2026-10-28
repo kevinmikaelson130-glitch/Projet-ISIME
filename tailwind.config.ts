@@ -34,6 +34,11 @@ export default {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
         },
+        status: {
+          pending: "hsl(var(--status-pending))",
+          accepted: "hsl(var(--status-accepted))",
+          rejected: "hsl(var(--status-rejected))",
+        },
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
