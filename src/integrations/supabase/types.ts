@@ -196,6 +196,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_admin_by_email: { Args: { _email: string }; Returns: string }
       can_upload_application_document: {
         Args: { _name: string }
         Returns: boolean
@@ -207,6 +208,16 @@ export type Database = {
         }
         Returns: boolean
       }
+      list_admins: {
+        Args: never
+        Returns: {
+          created_at: string
+          email: string
+          last_sign_in_at: string
+          user_id: string
+        }[]
+      }
+      remove_admin: { Args: { _user_id: string }; Returns: undefined }
       track_application: {
         Args: { _code: string }
         Returns: {
