@@ -4,3 +4,4 @@
 - Admins read application documents through short-lived signed URLs, never public URLs. Why: the files are personal ID documents.
 - Document types, size and format rules are defined once in `src/lib/applicationDocuments.ts` and covered by its test. Why: the form, the admin view and the storage policy must agree.
 - The admin Excel export is built in the browser (`write-excel-file`, loaded on demand) from the list currently filtered on screen; column order and French status labels live in `src/lib/exportApplications.ts` with its test. Why: no server needed and admins export exactly what they see.
+- Admin statistics are computed in the browser from the applications and contact_messages rows by `src/lib/adminStats.ts` (covered by its test); an application counts as "à traiter" until it is accepted or rejected, and a message until it is responded. Why: one place for the counting rules, no extra database functions.
