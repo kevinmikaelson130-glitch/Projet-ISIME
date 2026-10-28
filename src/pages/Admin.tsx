@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   Users, MessageSquare, LogOut, Menu, X, 
-  FileText, ChevronRight, Home, Newspaper, BarChart3
+  FileText, ChevronRight, Home, Newspaper, BarChart3, ShieldCheck
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
@@ -11,15 +11,17 @@ import { AdminApplications } from '@/components/admin/AdminApplications';
 import { AdminMessages } from '@/components/admin/AdminMessages';
 import { AdminNews } from '@/components/admin/AdminNews';
 import { AdminStats } from '@/components/admin/AdminStats';
+import { AdminAccounts } from '@/components/admin/AdminAccounts';
 import isimeLogo from '@/assets/isime-logo.jpeg';
 
-type Tab = 'stats' | 'applications' | 'messages' | 'news';
+type Tab = 'stats' | 'applications' | 'messages' | 'news' | 'admins';
 
 const TAB_HEADINGS: Record<Tab, { title: string; subtitle: string }> = {
   stats: { title: 'Statistiques', subtitle: "Vue d'ensemble des candidatures et des messages" },
   applications: { title: 'Candidatures', subtitle: 'Gérez les demandes de candidature' },
   messages: { title: 'Messages', subtitle: 'Répondez aux messages des visiteurs' },
   news: { title: 'Actualités', subtitle: 'Publiez les nouvelles du site' },
+  admins: { title: 'Administrateurs', subtitle: "Ajoutez ou retirez les personnes qui ont accès à l'admin" },
 };
 
 const Admin = () => {
