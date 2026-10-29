@@ -1,47 +1,8 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { Code, TrendingUp, Palette, ArrowRight } from "lucide-react";
-
-// Import images
-import programInformatique from "@/assets/program-informatique.jpg";
-import programGestion from "@/assets/program-gestion.jpg";
-import programMultimedia from "@/assets/program-multimedia.jpg";
-
-const programs = [
-  {
-    id: "informatique",
-    icon: Code,
-    title: "Informatique",
-    description: "Formez-vous aux technologies de demain",
-    image: programInformatique,
-    specializations: ["Génie Logiciel", "Réseaux & Systèmes", "Développement Web & Mobile"],
-    careers: ["Développeur Full Stack", "Ingénieur Réseaux", "Analyste Programmeur", "Chef de Projet IT"],
-    color: "from-blue-500 to-cyan-500",
-    overlay: "from-blue-900/80 via-blue-900/60 to-transparent",
-  },
-  {
-    id: "gestion",
-    icon: TrendingUp,
-    title: "Gestion",
-    description: "Devenez un leader du management",
-    image: programGestion,
-    specializations: ["Finance & Comptabilité", "Marketing Digital", "Commerce International"],
-    careers: ["Directeur Marketing", "Entrepreneur", "Analyste Financier", "Responsable Commercial"],
-    color: "from-emerald-500 to-teal-500",
-    overlay: "from-emerald-900/80 via-emerald-900/60 to-transparent",
-  },
-  {
-    id: "multimedia",
-    icon: Palette,
-    title: "Multimédia",
-    description: "Libérez votre créativité digitale",
-    image: programMultimedia,
-    specializations: ["Design 3D", "Montage Vidéo", "Photographie", "Web Design"],
-    careers: ["Designer Graphique", "Community Manager", "Motion Designer", "Directeur Artistique"],
-    color: "from-purple-500 to-pink-500",
-    overlay: "from-purple-900/80 via-purple-900/60 to-transparent",
-  },
-];
+import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { programs } from "@/data/programs";
 
 export const Programs = () => {
   const ref = useRef(null);
@@ -146,13 +107,13 @@ export const Programs = () => {
                   </div>
 
                   {/* CTA */}
-                  <a
-                    href="#admissions"
+                  <Link
+                    to={`/formations/${program.id}`}
                     className="inline-flex items-center gap-2 text-primary font-medium group/link"
                   >
-                    En savoir plus
+                    Découvrir le programme complet
                     <ArrowRight className="w-4 h-4 transition-transform group-hover/link:translate-x-1" />
-                  </a>
+                  </Link>
                 </div>
               </div>
             </motion.div>
