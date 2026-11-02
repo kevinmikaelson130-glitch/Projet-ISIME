@@ -19,6 +19,7 @@ const navItems = [
   },
   { label: "À propos", href: "/#about" },
   { label: "Admissions", href: "/#admissions" },
+  { label: "FAQ", href: "/#faq" },
   { label: "Contact", href: "/#contact" },
 ];
 
