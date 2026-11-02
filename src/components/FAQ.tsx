@@ -31,7 +31,7 @@ export const FAQ = () => {
             <div className="bg-secondary text-secondary-foreground rounded-3xl p-6 relative overflow-hidden">
               <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/20 rounded-full blur-3xl" />
               <div className="relative z-10">
-                <h3 className="font-semibold text-lg mb-2">Vous ne trouvez pas votre réponse ?</h3>
+                <h3 className="font-semibold text-lg mb-2 text-secondary-foreground">Vous ne trouvez pas votre réponse ?</h3>
                 <p className="text-secondary-foreground/70 text-sm mb-5">
                   Appelez-nous du lundi au vendredi, de 8h00 à 17h00, ou écrivez-nous.
                 </p>
