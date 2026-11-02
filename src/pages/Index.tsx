@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { WhyChooseUs } from "@/components/WhyChooseUs";
@@ -14,6 +15,14 @@ import { News } from "@/components/News";
 import { ScrollToTop } from "@/components/ScrollToTop";
 
 const Index = () => {
+  // Arriving from another page with a link like "/#candidature": scroll to that section once it is rendered.
+  useEffect(() => {
+    const id = window.location.hash.slice(1);
+    if (!id) return;
+    const timer = setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }), 300);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="min-h-screen">
       <Header />

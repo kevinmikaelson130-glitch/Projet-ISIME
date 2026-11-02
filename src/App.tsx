@@ -11,6 +11,7 @@ import AdminLogin from "./pages/AdminLogin";
 import OAuthConsent from "./pages/OAuthConsent";
 import NotFound from "./pages/NotFound";
 import Legal from "./pages/Legal";
+import ProgramPage from "./pages/ProgramPage";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/suivi" element={<Track />} />
             <Route path="/confidentialite" element={<Legal page="confidentialite" />} />
             <Route path="/mentions-legales" element={<Legal page="mentions" />} />
+            <Route path="/formations/:slug" element={<ProgramPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
