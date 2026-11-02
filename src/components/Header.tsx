@@ -7,19 +7,19 @@ import isimeLogo from "@/assets/isime-logo.jpeg";
 import { Link } from "react-router-dom";
 
 const navItems = [
-  { label: "Accueil", href: "#" },
+  { label: "Accueil", href: "/" },
   {
     label: "Formations",
-    href: "#programmes",
+    href: "/#programmes",
     submenu: [
-      { label: "Informatique", href: "#informatique" },
-      { label: "Gestion", href: "#gestion" },
-      { label: "Multimédia", href: "#multimedia" },
+      { label: "Informatique", href: "/formations/informatique" },
+      { label: "Gestion", href: "/formations/gestion" },
+      { label: "Multimédia", href: "/formations/multimedia" },
     ],
   },
-  { label: "À propos", href: "#about" },
-  { label: "Admissions", href: "#admissions" },
-  { label: "Contact", href: "#contact" },
+  { label: "À propos", href: "/#about" },
+  { label: "Admissions", href: "/#admissions" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 export const Header = () => {
@@ -66,7 +66,7 @@ export const Header = () => {
         <div className="container-custom">
           <nav className="flex items-center justify-between h-20">
             {/* Logo */}
-            <a href="#" className="flex-shrink-0">
+            <a href="/" className="flex-shrink-0">
             <img
                 src={isimeLogo}
                 alt="ISIME - Institut Supérieur de l'Informatique et Management"
@@ -127,7 +127,7 @@ export const Header = () => {
               >
                 Admin
               </Link>
-              <a href="#admissions" className="btn-primary">
+              <a href="/#candidature" className="btn-primary">
                 Postuler maintenant
               </a>
             </div>
@@ -186,7 +186,7 @@ export const Header = () => {
                   >
                     Admin
                   </Link>
-                  <a href="#admissions" className="btn-primary w-full text-center">
+                  <a href="/#candidature" className="btn-primary w-full text-center">
                     Postuler maintenant
                   </a>
                 </div>

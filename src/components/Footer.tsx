@@ -3,20 +3,20 @@ import isimeLogo from "@/assets/isime-logo.jpeg";
 
 const footerLinks = {
   formations: [
-    { label: "Informatique", href: "#informatique" },
-    { label: "Gestion", href: "#gestion" },
-    { label: "Multimédia", href: "#multimedia" },
+    { label: "Informatique", href: "/formations/informatique" },
+    { label: "Gestion", href: "/formations/gestion" },
+    { label: "Multimédia", href: "/formations/multimedia" },
   ],
   institution: [
-    { label: "À propos", href: "#about" },
-    { label: "Nos campus", href: "#contact" },
+    { label: "À propos", href: "/#about" },
+    { label: "Nos campus", href: "/#contact" },
     { label: "Accréditations", href: "#" },
-    { label: "Actualités", href: "#" },
+    { label: "Actualités", href: "/#actualites" },
   ],
   admissions: [
-    { label: "Postuler", href: "#admissions" },
-    { label: "Documents requis", href: "#admissions" },
-    { label: "Frais de scolarité", href: "#" },
+    { label: "Postuler", href: "/#candidature" },
+    { label: "Documents requis", href: "/#admissions" },
+    { label: "Frais de scolarité", href: "/#admissions" },
     { label: "Bourses", href: "#" },
   ],
 };
