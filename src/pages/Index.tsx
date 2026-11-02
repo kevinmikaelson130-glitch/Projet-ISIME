@@ -13,6 +13,7 @@ import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
 import { News } from "@/components/News";
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { FAQ } from "@/components/FAQ";
 
 const Index = () => {
   // Arriving from another page with a link like "/#candidature": scroll to that section once it is rendered.
@@ -38,6 +39,7 @@ const Index = () => {
         <ApplicationForm />
         <Admissions />
         <News />
+        <FAQ />
         <Contact />
       </main>
       <Footer />

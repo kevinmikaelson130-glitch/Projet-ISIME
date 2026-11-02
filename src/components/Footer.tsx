@@ -17,6 +17,7 @@ const footerLinks = {
     { label: "Postuler", href: "/#candidature" },
     { label: "Documents requis", href: "/#admissions" },
     { label: "Frais de scolarité", href: "/#admissions" },
+    { label: "Questions fréquentes", href: "/#faq" },
     { label: "Bourses", href: "#" },
   ],
 };
