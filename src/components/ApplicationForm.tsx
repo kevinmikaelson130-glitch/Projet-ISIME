@@ -52,6 +52,7 @@ const programs = [
   "Master en Informatique",
   "Master en Management",
   "MBA",
+  "Multimédia",
 ];
 
 const educationLevels = [
